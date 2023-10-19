@@ -9,23 +9,20 @@ const ChatPage = ({socket}) => {
     const lastMessageRef = useRef(null);
 
     useEffect(() => {
-        // Define the function within the useEffect so it has access to the setMessages function 
-        // without causing a re-run of the effect when messages state updates.
         const handleNewMessage = (message) => {
             setMessages((currentMessages) => [...currentMessages, message]);
         };
         
-        // Listen for the "/communications/send" event from the server and handle with the function defined above
+        // Listen for the "/communications/send" event from the server
         socket.on('/communications/send', handleNewMessage);
 
-        // Return a cleanup function to stop listening to the event when the component unmounts 
-        // or when the effect is run again (to prevent memory leaks).
         return () => socket.off('/communications/send', handleNewMessage);
-    }, [socket]); // Only re-run effect if socket object changes
+    }, [socket]); 
 
     useEffect(() => {
         socket.on('/communications/typing', (message) => setTypingStatus(message));
-        // Don’t forget to clean up this effect as well
+
+        // TODO create a backend route to handle the typing status
         return () => socket.off('/communications/typing');
     }, [socket]);
 
