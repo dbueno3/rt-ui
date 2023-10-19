@@ -8,19 +8,11 @@ const Home = ({ socket }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem("username", userName);
+        sessionStorage.setItem("username", userName);
         socket.emit("newUser", {userName, socketID: socket.id});
         navigate("/chat");
     }
-    // This useEffect is `fetching` the echo endpoint from communications controller 
-    // useEffect((socket)=>{
-    //     socket.on('/communication/echo', (data) =>{
-    //         console.log("COMMUNICATIONS IS BEING HIT WITH REACT", data)
-    //     });
-    //     return () => {
-    //         socket.off('/communication/echo')
-    //     }
-    // }, [socket])
+
 
     return  (
     <form className='home__container' onSubmit={handleSubmit}>

@@ -1,40 +1,42 @@
-import React from "react";
-import { useState} from "react";
+import React, { useState } from "react";
 
 const ChatFooter = ({ socket }) => {
     const [message, setMessage] = useState("");
-    const handleTyping = () => socket.emit("typing",`${localStorage.getItem("userName")} is typing`)
-
+    const name = sessionStorage.getItem("userName");
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if(message.trim() && localStorage.getItem('userName')){
-            socket.on('/communications/send',{
-                text: message, 
-                name: localStorage.getItem('userName'),
-                id:  `${socket.id}${Math.random()}`,
-                socketID: socket.id
-            })  
-            console.log('/communications/send got hit', message)      
-        }
 
-        setMessage("");
+        if(message.trim()){
+            const messageObj = {
+                name: name,
+                message: message
+            };
+            // socket.emit('/communications/send', messageObj);
+            const eventName = '/communications/send';
+            socket.emit(eventName, {message: message, name: name });
+            console.log(messageObj);
+            setMessage('');
+        } else {
+            console.log("WE Got clipped");
+        }
     };
 
     return (
         <div className='chat__footer'>
             <form className='form' onSubmit={handleSendMessage}>
-            <input 
-                type="text" 
-                placeholder='Write message' 
-                className='message' 
-                value={message} 
-                onChange={e => setMessage(e.target.value)}
-                onKeyDown={handleTyping}
+                <input 
+                    type="text" 
+                    placeholder='Write message' 
+                    className='message'
+                    value={message}
+                    onChange={e => setMessage(e.target.value)}
                 />
-                <button className="sendBtn">SEND</button>
+                <button type="submit" className="sendBtn">
+                    SEND 
+                </button>
             </form>
         </div>
-    )
-}
+    );
+};
 
 export default ChatFooter;

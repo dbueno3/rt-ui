@@ -7,41 +7,41 @@ const ChatBody = ({ messages, typingStatus, lastMessageRef }) => {
     const handleLeaveChat = () => {
         localStorage.removeItem("userName");
         navigate("/");
-        window.location.reload();
+        // Instead of reloading, consider resetting relevant state
     };
 
     return (
         <>
-        <header className='chat__mainHeader'>
-            <p>Hangout with Colleagues</p>
-            <button className='leaveChat__btn' onClick={handleLeaveChat}>LEAVE CHAT</button>
+            <header className='chat__mainHeader'>
+                <p>GroupChat</p>
+                <button className='leaveChat__btn' onClick={handleLeaveChat}>LEAVE CHAT</button>
             </header>
             <div className='message__container'>
-            {messages.map(message => (
-                message.name === localStorage.getItem("userName") ? (
-                <div className="message__chats" key={message.id}>
-                <p className='sender__name'>You</p>
-                <div className='message__sender'>
-                    <p>{message.text}</p>
-                </div>
-            </div>
-                ): (
-                <div className="message__chats" key={message.id}>
-                <p>{message.name}</p>
-                <div className='message__recipient'>
-                    <p>{message.text}</p>
-                </div>
-            </div>
-                )
+                {messages.map((message, index) => (
+                    message.name === sessionStorage.getItem("userName") ? (
+                        <div className="message__chats" key={index}>
+                            <p className='sender__name'>You</p>
+                            <div className='message__sender'>
+                                <p>{message.message}</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="message__chats" key={index}>
+                            <p>{message.name}</p>
+                            <div className='message__recipient'>
+                                <p>{message.message}</p>
+                            </div>
+                        </div>
+                    )
                 ))}
-            <div className='message__status'>
-                <p>{typingStatus}</p>
-            </div>
-            <div ref={lastMessageRef} />   
+                <div className='message__status'>
+                    <p>{typingStatus}</p>
+                </div>
+                <div ref={lastMessageRef} />   
             </div>
         </>
-    )
-}
+    );
+};
 
 export default ChatBody;
 
